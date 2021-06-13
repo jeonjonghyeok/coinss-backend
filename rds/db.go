@@ -1,40 +1,67 @@
 package rds
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"time"
+
 	redis "github.com/go-redis/redis"
 )
 
-func InitializeRedisClient() (*redis.Client, error) {
+type Resp_Quote struct {
+	Status struct {
+		Timestamp string `json:"timestamp"`
+	} `json:"status"`
+	Data []struct {
+		Name   string   `json:"name"`
+		Symbol string   `json:"symbol"`
+		Tags   []string `json:"tags"`
+		Quote  struct {
+			Usd struct {
+				Price float32 `json:"price"`
+			} `json:"USD"`
+			BTC struct {
+				Price float32 `json:"price"`
+			} `json:"BTC"`
+		} `json:"quote"`
+	} `json:"data"`
+}
 
-	client := redis.NewClient(&redis.Options{
+func Connect() error {
+	log.Println("RDS Connect")
+	rds_client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379", // 접근 url 및 port
 		Password: "",               // password ""값은 없다는 뜻
 		DB:       0,                // 기본 DB 사용
 	})
 
-	_, err := client.Ping().Result()
-
-	return client, err
-}
-
-/*
-func ExecuteSomething() {
-
-	Client, err := initializeRedisClient()
-
-	if nil != err {
-		panic(err)
-	}
-
-	err = Client.Set("value", "2", 0).Err() // 마지막 인자는 만료 시간 Redis 데이터의 만료 시간을 지정할 수 있다.
+	_, err := rds_client.Ping().Result()
 	if err != nil {
 		panic(err)
 	}
 
-	val, err := Client.Get("value").Result()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("value : ", val)
+	go GetMarketPrice(rds_client)
+	time.Sleep(time.Second * 2)
+	go readPump(rds_client)
+
+	return err
 }
-*/
+
+func readPump(rds_client *redis.Client) {
+	var RespQuote Resp_Quote
+	for {
+		for i := 0; i < 50; i++ {
+			val, err := rds_client.Get("price").Result()
+			if err != nil {
+				panic(err)
+			}
+			json.Unmarshal([]byte(val), &RespQuote)
+			fmt.Print(RespQuote.Data[i].Symbol, " ")
+			fmt.Println(RespQuote.Data[i].Quote.Usd.Price)
+
+		}
+		time.Sleep(time.Second * 10)
+	}
+
+}
