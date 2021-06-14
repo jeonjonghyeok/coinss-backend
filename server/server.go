@@ -15,7 +15,6 @@ type Config struct {
 }
 
 func ListenAndServe(c Config) error {
-	log.Println("ListenAndServe")
 	if err := psql.Connect(c.Url); err != nil {
 		log.Fatal(err)
 	}
@@ -23,5 +22,5 @@ func ListenAndServe(c Config) error {
 		log.Fatal(err)
 	}
 
-	return http.ListenAndServe(c.Address, api.API())
+	return http.ListenAndServe(c.Address, loggingMiddleware(api.API()))
 }
