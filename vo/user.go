@@ -1,6 +1,10 @@
 package vo
 
 type User struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	Name        string `json:"name"`
+	PhoneNumber string `json:"phone_number"`
+	Secretkey   string `json:"secret_key"`
+	Accesskey   string `json:"access_key"`
 }

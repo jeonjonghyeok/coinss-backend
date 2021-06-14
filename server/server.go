@@ -22,7 +22,6 @@ func ListenAndServe(c Config) error {
 	if err := rds.Connect(); err != nil {
 		log.Fatal(err)
 	}
-	log.Println("db end")
 
 	return http.ListenAndServe(c.Address, api.API())
 }

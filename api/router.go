@@ -12,6 +12,7 @@ func API() http.Handler {
 	router := mux.NewRouter()
 	//user
 	router.HandleFunc("/signup", signup).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/signin", signin).Methods(http.MethodPost, http.MethodOptions)
 
 	router.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
