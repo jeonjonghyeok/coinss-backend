@@ -19,3 +19,8 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 		log.Panic(err)
 	}
 }
+func must(err error) {
+	if err != nil {
+		panic(internalError)
+	}
+}

@@ -1,18 +1,19 @@
 package api
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
 func API() http.Handler {
-	log.Println("Router Start")
 	router := mux.NewRouter()
+
 	//user
 	router.HandleFunc("/signup", signup).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc("/signin", signin).Methods(http.MethodPost, http.MethodOptions)
+
+	router.Use(handlePanic)
 
 	router.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
