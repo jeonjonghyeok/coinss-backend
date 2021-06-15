@@ -18,78 +18,21 @@ var doc = `{
     "info": {
         "description": "{{.Description}}",
         "title": "{{.Title}}",
+        "termsOfService": "http://swagger.io/terms/",
         "contact": {
-            "name": "Request permission of Example API",
-            "url": "http://www.yonghochoi.com",
-            "email": "yongho1037@gmail.com"
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {
-        "/api/v1/signup": {
-            "post": {
-                "description": "If it already exists, the changeable information is updated, and in the case of a new host, it is created and returned.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Host information collection.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Email",
-                        "name": "email",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "PassWord",
-                        "name": "password",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/vo.User"
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "vo.User": {
-            "type": "object",
-            "properties": {
-                "access_key": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "secret_key": {
-                    "type": "string"
-                }
-            }
-        }
-    }
+    "paths": {}
 }`
 
 type swaggerInfo struct {
@@ -103,12 +46,12 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "0.0.2",
-	Host:        "localhost",
-	BasePath:    "/api/v1",
+	Version:     "1.0",
+	Host:        "petstore.swagger.io",
+	BasePath:    "/v2",
 	Schemes:     []string{},
-	Title:       "Example API",
-	Description: "This is a Example api server",
+	Title:       "Swagger Coinss API",
+	Description: "This is Coinss API",
 }
 
 type s struct{}

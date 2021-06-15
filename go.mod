@@ -7,6 +7,7 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/gin-gonic/gin v1.7.2 // indirect
+	github.com/go-chi/chi v4.1.2+incompatible // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
@@ -24,7 +25,9 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/swaggo/echo-swagger v1.1.0 // indirect
+	github.com/swaggo/http-swagger v1.0.0 // indirect
 	github.com/swaggo/swag v1.7.0 // indirect
 	github.com/twinj/uuid v1.0.0 // indirect
 	github.com/ugorji/go v1.2.6 // indirect

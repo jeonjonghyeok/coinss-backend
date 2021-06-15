@@ -1,53 +1,16 @@
-basePath: /api/v1
-definitions:
-  vo.User:
-    properties:
-      access_key:
-        type: string
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-      phone_number:
-        type: string
-      secret_key:
-        type: string
-    type: object
-host: localhost
+basePath: /v2
+host: petstore.swagger.io
 info:
   contact:
-    email: yongho1037@gmail.com
-    name: Request permission of Example API
-    url: http://www.yonghochoi.com
-  description: This is a Example api server
-  title: Example API
-  version: 0.0.2
-paths:
-  /api/v1/signup:
-    post:
-      consumes:
-      - application/json
-      description: If it already exists, the changeable information is updated, and
-        in the case of a new host, it is created and returned.
-      parameters:
-      - description: Email
-        in: path
-        name: email
-        required: true
-        type: string
-      - description: PassWord
-        in: path
-        name: password
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/vo.User'
-      summary: Host information collection.
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is Coinss API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Coinss API
+  version: "1.0"
+paths: {}
 swagger: "2.0"
