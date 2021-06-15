@@ -43,7 +43,7 @@ func Connect() error {
 
 	go GetMarketPrice(rds_client)
 	time.Sleep(time.Second * 2)
-	go readPump(rds_client)
+	//go readPump(rds_client)
 
 	return err
 }
@@ -54,6 +54,7 @@ func readPump(rds_client *redis.Client) {
 		for i := 0; i < 50; i++ {
 			val, err := rds_client.Get("price").Result()
 			if err != nil {
+				log.Println(err)
 				panic(err)
 			}
 			json.Unmarshal([]byte(val), &RespQuote)

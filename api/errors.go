@@ -40,3 +40,18 @@ var internalError = simpleError{
 	message: "Internal Error",
 	status:  http.StatusInternalServerError,
 }
+
+var notFoundError = simpleError{
+	message: "Not Found Error",
+	status:  http.StatusNotFound,
+}
+
+var existUserError = simpleError{
+	message: "Exist User Error",
+	status:  http.StatusBadRequest,
+}
+
+var unauthorizedError = simpleError{
+	message: "unauthorized Error",
+	status:  http.StatusUnauthorized,
+}

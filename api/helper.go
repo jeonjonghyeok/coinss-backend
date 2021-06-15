@@ -5,6 +5,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/jeonjonghyeok/coinss-backend/psql"
 )
 
 func parseJSON(r io.Reader, v interface{}) {
@@ -20,7 +22,10 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 	}
 }
 func must(err error) {
-	if err != nil {
+	if err == psql.ErrUnauthorized {
+		panic(unauthorizedError)
+	} else if err != nil {
+		log.Println("internal error:", err)
 		panic(internalError)
 	}
 }

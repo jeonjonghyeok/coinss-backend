@@ -1,0 +1,53 @@
+basePath: /api/v1
+definitions:
+  vo.User:
+    properties:
+      access_key:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      secret_key:
+        type: string
+    type: object
+host: localhost
+info:
+  contact:
+    email: yongho1037@gmail.com
+    name: Request permission of Example API
+    url: http://www.yonghochoi.com
+  description: This is a Example api server
+  title: Example API
+  version: 0.0.2
+paths:
+  /api/v1/signup:
+    post:
+      consumes:
+      - application/json
+      description: If it already exists, the changeable information is updated, and
+        in the case of a new host, it is created and returned.
+      parameters:
+      - description: Email
+        in: path
+        name: email
+        required: true
+        type: string
+      - description: PassWord
+        in: path
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vo.User'
+      summary: Host information collection.
+swagger: "2.0"

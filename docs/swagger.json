@@ -1,0 +1,78 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a Example api server",
+        "title": "Example API",
+        "contact": {
+            "name": "Request permission of Example API",
+            "url": "http://www.yonghochoi.com",
+            "email": "yongho1037@gmail.com"
+        },
+        "version": "0.0.2"
+    },
+    "host": "localhost",
+    "basePath": "/api/v1",
+    "paths": {
+        "/api/v1/signup": {
+            "post": {
+                "description": "If it already exists, the changeable information is updated, and in the case of a new host, it is created and returned.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Host information collection.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "PassWord",
+                        "name": "password",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vo.User"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "vo.User": {
+            "type": "object",
+            "properties": {
+                "access_key": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "secret_key": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

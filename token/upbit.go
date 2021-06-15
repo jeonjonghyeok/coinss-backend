@@ -9,10 +9,12 @@ type customClaims struct {
 	jwt.StandardClaims
 	AccessKey string `json:"access_key"`
 	Nonce     string `json:"nonce"`
+	UserID    int    `json:"id"`
 }
 
-func New(AccessKey, SecretKey string) (string, error) {
+func New(id int, AccessKey, SecretKey string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, customClaims{
+		UserID:         id,
 		AccessKey:      AccessKey,
 		Nonce:          uuid.NewV4().String(),
 		StandardClaims: jwt.StandardClaims{},

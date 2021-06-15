@@ -13,6 +13,14 @@ const (
 	DB_NAME     = "jjh"
 )
 
+// @title Example API
+// @version 0.0.2
+// @description This is a Example api server
+// @contact.name Request permission of Example API
+// @contact.url http://www.yonghochoi.com
+// @contact.email yongho1037@gmail.com
+// @host localhost
+// @BasePath /api/v1
 func main() {
 
 	if err := server.ListenAndServe(
