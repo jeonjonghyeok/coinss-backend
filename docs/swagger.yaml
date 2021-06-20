@@ -1,5 +1,12 @@
 basePath: /api/v1
 definitions:
+  controller.emailPassword:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   httputil.HTTPError:
     properties:
       code:
@@ -38,12 +45,47 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /user/signin:
+    post:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: post-user-signin
+      parameters:
+      - description: User
+        in: body
+        name: emailPassword
+        required: true
+        schema:
+          $ref: '#/definitions/controller.emailPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Login
+      tags:
+      - user
   /user/signup:
     post:
       consumes:
       - application/json
       description: get string by ID
-      operationId: get-string-by-int
+      operationId: post-user-signup
       parameters:
       - description: User
         in: body
