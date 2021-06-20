@@ -27,6 +27,8 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/swaggo/echo-swagger v1.1.0 // indirect
+	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14 // indirect
+	github.com/swaggo/gin-swagger v1.3.0 // indirect
 	github.com/swaggo/http-swagger v1.0.0 // indirect
 	github.com/swaggo/swag v1.7.0 // indirect
 	github.com/twinj/uuid v1.0.0 // indirect
