@@ -1,62 +1,74 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"net/url"
-	"os"
-	"time"
 
-	"github.com/go-redis/redis"
-	"github.com/jeonjonghyeok/exchange-go/quote"
-	"github.com/jeonjonghyeok/exchange-go/rds"
-	"github.com/jeonjonghyeok/exchange-go/vo"
+	"github.com/gin-gonic/gin"
+	"github.com/jeonjonghyeok/coinss-backend/controller"
+	_ "github.com/jeonjonghyeok/coinss-backend/docs"
+	"github.com/jeonjonghyeok/coinss-backend/psql"
+	"github.com/jeonjonghyeok/coinss-backend/rds"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+const (
+	DB_USER     = "jjh"
+	DB_PASSWORD = "jjh"
+	DB_NAME     = "jjh"
+)
+
+// @title Swagger Example API
+// @version 1.0
+// @description This is a sample server celler server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:5000
+// @BasePath /api/v1
 func main() {
-	rds_client, err := rds.InitializeRedisClient()
-	if err != nil {
-		log.Println(err)
+	if err := psql.Connect(fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
+		DB_USER, DB_PASSWORD, DB_NAME)); err != nil {
+		log.Fatal(err)
 	}
-
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest", nil)
-	if err != nil {
-		log.Print(err)
-		os.Exit(1)
+	if err := rds.Connect(); err != nil {
+		log.Fatal(err)
 	}
-
-	q := url.Values{}
-	q.Add("start", "1")
-	q.Add("limit", "50")
-	q.Add("convert", "USD")
-
-	req.Header.Set("Accepts", "application/json")
-	req.Header.Add("X-CMC_PRO_API_KEY", "1cc3129e-e274-48fc-88e0-0fba6e437cbd")
-	req.URL.RawQuery = q.Encode()
-
-	go quote.GetMarketPrice(client, rds_client, req)
-	time.Sleep(time.Second * 2)
-	go readPump(rds_client)
-	fmt.Scanln()
-
-}
-func readPump(rds_client *redis.Client) {
-	var RespQuote vo.Resp_Quote
-	for {
-		for i := 0; i < 50; i++ {
-			val, err := rds_client.Get("price").Result()
-			if err != nil {
-				panic(err)
-			}
-			json.Unmarshal([]byte(val), &RespQuote)
-			fmt.Print(RespQuote.Data[i].Symbol, " ")
-			fmt.Println(RespQuote.Data[i].Quote.Usd.Price)
-
+	r := gin.Default()
+	c := controller.NewController()
+	r.Use(gin.Logger())
+	r.Use(gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
+		if err, ok := recovered.(string); ok {
+			c.String(http.StatusInternalServerError, fmt.Sprintf("error: %s", err))
 		}
-		time.Sleep(time.Second * 10)
-	}
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}))
+	r.GET("/panic", func(c *gin.Context) {
+		// panic with a string -- the custom middleware could save this to a database or report it to the user
+		panic("foo")
+	})
 
+	r.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "ohai")
+	})
+
+	v1 := r.Group("api/v1")
+	{
+		user := v1.Group("/user")
+		{
+			user.POST("signup", c.AddUser)
+			user.POST("signin", c.SigninUser)
+		}
+	}
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	//router.Use(handlePanic)
+	r.Run(":5000")
 }
