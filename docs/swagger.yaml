@@ -31,6 +31,43 @@ definitions:
       secretkey:
         type: string
     type: object
+  rds.Resp_Quote:
+    properties:
+      data:
+        items:
+          properties:
+            name:
+              type: string
+            quote:
+              properties:
+                BTC:
+                  properties:
+                    price:
+                      type: number
+                  type: object
+                USD:
+                  properties:
+                    price:
+                      type: number
+                  type: object
+              type: object
+            symbol:
+              type: string
+            tags:
+              items:
+                type: string
+              type: array
+          required:
+          - name
+          - symbol
+          type: object
+        type: array
+      status:
+        properties:
+          timestamp:
+            type: string
+        type: object
+    type: object
 host: localhost:5000
 info:
   contact:
@@ -45,6 +82,33 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /coin/list:
+    get:
+      consumes:
+      - application/json
+      description: get coinlist
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rds.Resp_Quote'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Coin-List
+      tags:
+      - coin
   /user/signin:
     post:
       consumes:
