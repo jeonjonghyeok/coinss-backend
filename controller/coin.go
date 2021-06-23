@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jeonjonghyeok/coinss-backend/model"
 	"github.com/jeonjonghyeok/coinss-backend/psql"
 	"github.com/jeonjonghyeok/coinss-backend/rds"
 	upbit "github.com/jeonjonghyeok/coinss-backend/token"
@@ -46,7 +48,7 @@ type testHeader struct {
 // @Accept  json
 // @Produce  json
 // @Param token header string true "token"
-// @Success 200 {object} rds.Resp_Quote
+// @Success 200 {object} model.Wallet
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 404 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
@@ -93,8 +95,11 @@ func (c *Controller) Wallet(ctx *gin.Context) {
 	}
 	fmt.Println(resp.Status)
 	respBody, _ := ioutil.ReadAll(resp.Body)
-	log.Println(respBody)
 
-	ctx.JSON(http.StatusOK, string(respBody))
+	var wallet []model.Wallet
+	json.Unmarshal(respBody, &wallet)
+	log.Println(wallet)
+
+	ctx.JSON(http.StatusOK, wallet)
 
 }

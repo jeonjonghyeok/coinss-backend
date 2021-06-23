@@ -100,7 +100,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/rds.Resp_Quote"
+                            "$ref": "#/definitions/model.Wallet"
                         }
                     },
                     "400": {
@@ -275,6 +275,29 @@ var doc = `{
                     "type": "string"
                 },
                 "secretkey": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Wallet": {
+            "type": "object",
+            "properties": {
+                "avg_buy_price": {
+                    "type": "string"
+                },
+                "avg_buy_price_modified": {
+                    "type": "boolean"
+                },
+                "balance": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "locked": {
+                    "type": "string"
+                },
+                "unit_currency": {
                     "type": "string"
                 }
             }
