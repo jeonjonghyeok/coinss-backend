@@ -33,6 +33,47 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/coin/list": {
+            "get": {
+                "description": "get coinlist",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "coin"
+                ],
+                "summary": "Coin-List",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/rds.Resp_Quote"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/user/signin": {
             "post": {
                 "description": "get string by ID",
@@ -185,6 +226,64 @@ var doc = `{
                 },
                 "secretkey": {
                     "type": "string"
+                }
+            }
+        },
+        "rds.Resp_Quote": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "name",
+                            "symbol"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "quote": {
+                                "type": "object",
+                                "properties": {
+                                    "BTC": {
+                                        "type": "object",
+                                        "properties": {
+                                            "price": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    },
+                                    "USD": {
+                                        "type": "object",
+                                        "properties": {
+                                            "price": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "symbol": {
+                                "type": "string"
+                            },
+                            "tags": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "status": {
+                    "type": "object",
+                    "properties": {
+                        "timestamp": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         }

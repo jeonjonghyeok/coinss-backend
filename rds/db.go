@@ -9,14 +9,26 @@ import (
 	redis "github.com/go-redis/redis"
 )
 
+type Coin struct {
+	Name string `
+	form:"name"
+	json:"name" 
+	example:"bitcoin"
+	binding:"required"`
+	Symbol string `
+	form:"symbol"
+	json:"symbol" 
+	example:"btc"
+	binding:"required"`
+}
+
 type Resp_Quote struct {
 	Status struct {
 		Timestamp string `json:"timestamp"`
 	} `json:"status"`
 	Data []struct {
-		Name   string   `json:"name"`
-		Symbol string   `json:"symbol"`
-		Tags   []string `json:"tags"`
+		Name   string `json:"name" form:"name" binding:"required"`
+		Symbol string `json:"symbol" form:"symbol" binding:"required"`
 		Quote  struct {
 			Usd struct {
 				Price float32 `json:"price"`
@@ -52,13 +64,14 @@ func readPump(rds_client *redis.Client) {
 	var RespQuote Resp_Quote
 	for {
 		val, err := rds_client.Get("price").Result()
+		if err != nil {
+			log.Println(err)
+			panic(err)
+		}
+		json.Unmarshal([]byte(val), &RespQuote)
 		for i := 0; i < 50; i++ {
-			if err != nil {
-				log.Println(err)
-				panic(err)
-			}
-			json.Unmarshal([]byte(val), &RespQuote)
 			fmt.Print(RespQuote.Data[i].Symbol, " ")
+			fmt.Print(RespQuote.Data[i].Name, " ")
 			fmt.Println(RespQuote.Data[i].Quote.Usd.Price)
 
 		}

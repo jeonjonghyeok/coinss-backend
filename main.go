@@ -67,8 +67,11 @@ func main() {
 			user.POST("signup", c.AddUser)
 			user.POST("signin", c.SigninUser)
 		}
+		coin := v1.Group("/coin")
+		{
+			coin.GET("list", c.CoinList)
+		}
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	//router.Use(handlePanic)
 	r.Run(":5000")
 }

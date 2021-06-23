@@ -38,7 +38,6 @@ func GetMarketPrice(rds_client *redis.Client) {
 	req.URL.RawQuery = q.Encode()
 
 	for {
-
 		resp, err := client.Do(req)
 		if err != nil {
 			fmt.Println("Error sending request to server")
