@@ -65,6 +65,7 @@ func main() {
 		user := v1.Group("/user")
 		{
 			user.POST("signup", c.AddUser)
+			user.POST("signin", c.SigninUser)
 		}
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
