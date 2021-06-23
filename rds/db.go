@@ -42,7 +42,7 @@ func Connect() error {
 
 	go GetMarketPrice(rds_client)
 	time.Sleep(time.Second * 2)
-	go readPump(rds_client)
+	//go readPump(rds_client)
 
 	return err
 }

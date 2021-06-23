@@ -83,11 +83,6 @@ paths:
       consumes:
       - application/json
       description: get coinlist
-      parameters:
-      - description: token
-        in: query
-        name: t
-        type: string
       produces:
       - application/json
       responses:
@@ -108,6 +103,39 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: Coin-List
+      tags:
+      - coin
+  /coin/wallet:
+    get:
+      consumes:
+      - application/json
+      description: get coinwallet
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rds.Resp_Quote'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Coin-Wallet
       tags:
       - coin
   /user/signin:
