@@ -46,6 +46,14 @@ var doc = `{
                     "coin"
                 ],
                 "summary": "Coin-List",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "t",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -267,12 +275,6 @@ var doc = `{
                             },
                             "symbol": {
                                 "type": "string"
-                            },
-                            "tags": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
                             }
                         }
                     }

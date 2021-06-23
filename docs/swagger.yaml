@@ -53,10 +53,6 @@ definitions:
               type: object
             symbol:
               type: string
-            tags:
-              items:
-                type: string
-              type: array
           required:
           - name
           - symbol
@@ -87,6 +83,11 @@ paths:
       consumes:
       - application/json
       description: get coinlist
+      parameters:
+      - description: token
+        in: query
+        name: t
+        type: string
       produces:
       - application/json
       responses:

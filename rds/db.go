@@ -9,19 +9,6 @@ import (
 	redis "github.com/go-redis/redis"
 )
 
-type Coin struct {
-	Name string `
-	form:"name"
-	json:"name" 
-	example:"bitcoin"
-	binding:"required"`
-	Symbol string `
-	form:"symbol"
-	json:"symbol" 
-	example:"btc"
-	binding:"required"`
-}
-
 type Resp_Quote struct {
 	Status struct {
 		Timestamp string `json:"timestamp"`
