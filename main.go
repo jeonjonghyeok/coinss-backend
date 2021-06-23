@@ -70,6 +70,7 @@ func main() {
 		coin := v1.Group("/coin")
 		{
 			coin.GET("list", c.CoinList)
+			coin.GET("wallet", c.Wallet)
 		}
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

@@ -46,19 +46,61 @@ var doc = `{
                     "coin"
                 ],
                 "summary": "Coin-List",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/rds.Resp_Quote"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/coin/wallet": {
+            "get": {
+                "description": "get coinwallet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "coin"
+                ],
+                "summary": "Coin-Wallet",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "token",
-                        "name": "t",
-                        "in": "query"
+                        "name": "token",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/rds.Resp_Quote"
+                            "$ref": "#/definitions/model.Wallet"
                         }
                     },
                     "400": {
@@ -233,6 +275,29 @@ var doc = `{
                     "type": "string"
                 },
                 "secretkey": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Wallet": {
+            "type": "object",
+            "properties": {
+                "avg_buy_price": {
+                    "type": "string"
+                },
+                "avg_buy_price_modified": {
+                    "type": "boolean"
+                },
+                "balance": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "locked": {
+                    "type": "string"
+                },
+                "unit_currency": {
                     "type": "string"
                 }
             }

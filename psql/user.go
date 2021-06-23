@@ -36,3 +36,12 @@ func FindUser(email, password string) (id int, err error) {
 	}
 	return
 }
+
+func FindUserKey(id int) (access_key, secret_key string, err error) {
+	err = db.QueryRow(`SELECT access_key, secret_key FROM public.user WHERE uid = $1`, id).Scan(&access_key, &secret_key)
+	if err != nil {
+		return "", "", err
+	}
+
+	return
+}
