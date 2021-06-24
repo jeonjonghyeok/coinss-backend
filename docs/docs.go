@@ -126,7 +126,7 @@ var doc = `{
         },
         "/user/signin": {
             "post": {
-                "description": "get string by ID",
+                "description": "로그인",
                 "consumes": [
                     "application/json"
                 ],
@@ -179,7 +179,7 @@ var doc = `{
         },
         "/user/signup": {
             "post": {
-                "description": "get string by ID",
+                "description": "회원가입",
                 "consumes": [
                     "application/json"
                 ],
@@ -236,10 +236,12 @@ var doc = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "jjh123@naver.com"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123"
                 }
             }
         },
@@ -258,24 +260,38 @@ var doc = `{
         },
         "model.User": {
             "type": "object",
+            "required": [
+                "access_key",
+                "email",
+                "name",
+                "password",
+                "phone_number",
+                "secret_key"
+            ],
             "properties": {
-                "accesskey": {
-                    "type": "string"
+                "access_key": {
+                    "type": "string",
+                    "example": "cY158XlCRODQljHva8pMjORsoxrKRdfg4S9jT8qa"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "jjh123@naver.com"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "jjh"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123"
                 },
-                "phoneNumber": {
-                    "type": "string"
+                "phone_number": {
+                    "type": "string",
+                    "example": "010-1234-5678"
                 },
-                "secretkey": {
-                    "type": "string"
+                "secret_key": {
+                    "type": "string",
+                    "example": "2y0BcdVYH48Hxc8SEwfOucxAqMoL623K70j6OCWa"
                 }
             }
         },

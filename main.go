@@ -35,29 +35,32 @@ const (
 // @host localhost:5000
 // @BasePath /api/v1
 func main() {
+	//postgres 연결
 	if err := psql.Connect(fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
 		DB_USER, DB_PASSWORD, DB_NAME)); err != nil {
 		log.Fatal(err)
 	}
+	//redis 연결
 	if err := rds.Connect(); err != nil {
 		log.Fatal(err)
 	}
 	r := gin.Default()
 	c := controller.NewController()
-	r.Use(gin.Logger())
+
+	//duplicate logging
+	//r.Use(gin.Logger())
+
 	r.Use(gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
-		if err, ok := recovered.(string); ok {
-			c.String(http.StatusInternalServerError, fmt.Sprintf("error: %s", err))
-		}
-		c.AbortWithStatus(http.StatusInternalServerError)
+		log.Println(recovered)
+		c.String(http.StatusInternalServerError, fmt.Sprintf("error: %s", recovered))
 	}))
 	r.GET("/panic", func(c *gin.Context) {
 		// panic with a string -- the custom middleware could save this to a database or report it to the user
-		panic("foo")
+		panic("test error")
 	})
 
 	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "ohai")
+		c.String(http.StatusOK, "hello coinss")
 	})
 
 	v1 := r.Group("api/v1")

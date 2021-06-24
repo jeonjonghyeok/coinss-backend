@@ -3,8 +3,10 @@ definitions:
   controller.emailPassword:
     properties:
       email:
+        example: jjh123@naver.com
         type: string
       password:
+        example: "123"
         type: string
     type: object
   httputil.HTTPError:
@@ -18,18 +20,31 @@ definitions:
     type: object
   model.User:
     properties:
-      accesskey:
+      access_key:
+        example: cY158XlCRODQljHva8pMjORsoxrKRdfg4S9jT8qa
         type: string
       email:
+        example: jjh123@naver.com
         type: string
       name:
+        example: jjh
         type: string
       password:
+        example: "123"
         type: string
-      phoneNumber:
+      phone_number:
+        example: 010-1234-5678
         type: string
-      secretkey:
+      secret_key:
+        example: 2y0BcdVYH48Hxc8SEwfOucxAqMoL623K70j6OCWa
         type: string
+    required:
+    - access_key
+    - email
+    - name
+    - password
+    - phone_number
+    - secret_key
     type: object
   model.Wallet:
     properties:
@@ -157,7 +172,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: get string by ID
+      description: 로그인
       operationId: post-user-signin
       parameters:
       - description: User
@@ -192,7 +207,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: get string by ID
+      description: 회원가입
       operationId: post-user-signup
       parameters:
       - description: User

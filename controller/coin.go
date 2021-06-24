@@ -2,11 +2,9 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jeonjonghyeok/coinss-backend/model"
@@ -37,7 +35,7 @@ func (c *Controller) CoinList(ctx *gin.Context) {
 
 }
 
-type testHeader struct {
+type header struct {
 	Token string `header:"Token"`
 }
 
@@ -58,9 +56,9 @@ func (c *Controller) Wallet(ctx *gin.Context) {
 	var secret_key string
 	var access_key string
 
-	h := testHeader{}
+	h := header{}
 	if err := ctx.ShouldBindHeader(&h); err != nil {
-		ctx.JSON(200, err)
+		panic(err)
 	}
 	id, err := upbit.Parse(h.Token)
 	if err != nil {
@@ -81,8 +79,7 @@ func (c *Controller) Wallet(ctx *gin.Context) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
-		log.Print(err)
-		os.Exit(1)
+		panic(err)
 	}
 
 	req.Header.Set("Accepts", "application/json")
@@ -90,15 +87,18 @@ func (c *Controller) Wallet(ctx *gin.Context) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error sending request to server")
-		os.Exit(1)
+		panic(err)
 	}
-	fmt.Println(resp.Status)
+	log.Println(resp.Status)
+	if resp.Status == "401 Unauthorized" {
+		panic("등록되지 않은 IP주소 입니다.")
+	}
 	respBody, _ := ioutil.ReadAll(resp.Body)
 
 	var wallet []model.Wallet
-	json.Unmarshal(respBody, &wallet)
-	log.Println(wallet)
+	if err := json.Unmarshal(respBody, &wallet); err != nil {
+		panic(err)
+	}
 
 	ctx.JSON(http.StatusOK, wallet)
 

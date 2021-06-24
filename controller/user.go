@@ -2,7 +2,6 @@ package controller
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jeonjonghyeok/coinss-backend/model"
@@ -12,7 +11,7 @@ import (
 
 // Register godoc
 // @Summary Register
-// @Description get string by ID
+// @Description 회원가입
 // @ID post-user-signup
 // @Tags user
 // @Accept  json
@@ -26,15 +25,13 @@ import (
 func (c *Controller) AddUser(ctx *gin.Context) {
 	var user model.User
 	if err := ctx.BindJSON(&user); err != nil {
-		ctx.String(http.StatusBadRequest, "bad request")
-		return
+		panic(err)
 	}
 	log.Println(user)
 	exists, err := psql.IsExistUser(user.Email)
 	if err != nil {
 		panic(err)
 	}
-	log.Println(exists, user)
 	if exists {
 		panic("duplicate user")
 	}
@@ -43,12 +40,6 @@ func (c *Controller) AddUser(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	/*
-		token, err := upbit.NewUpbit(id, user.Accesskey, user.Secretkey)
-		if err != nil {
-			panic(err)
-		}
-	*/
 	token, err := t.New(id)
 	if err != nil {
 		panic(err)
@@ -58,13 +49,13 @@ func (c *Controller) AddUser(ctx *gin.Context) {
 }
 
 type emailPassword struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" example:"jjh123@naver.com"`
+	Password string `json:"password" example:"123"`
 }
 
 // Login godoc
 // @Summary Login
-// @Description get string by ID
+// @Description 로그인
 // @ID post-user-signin
 // @Tags user
 // @Accept  json
@@ -78,14 +69,13 @@ type emailPassword struct {
 func (c *Controller) SigninUser(ctx *gin.Context) {
 	var user emailPassword
 	if err := ctx.BindJSON(&user); err != nil {
-		ctx.String(http.StatusBadRequest, "bad request")
-		return
+		panic(err)
 	}
 	log.Println(user)
 
 	id, err := psql.FindUser(user.Email, user.Password)
 	if err != nil {
-		panic(err)
+		panic("존재하지 않은 회원입니다.")
 	}
 	token, err := t.New(id)
 	if err != nil {
