@@ -5,8 +5,10 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 	"github.com/jeonjonghyeok/coinss-backend/model"
 	"github.com/jeonjonghyeok/coinss-backend/psql"
 	"github.com/jeonjonghyeok/coinss-backend/rds"
@@ -19,7 +21,7 @@ import (
 // @Tags coin
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} rds.Resp_Quote
+// @Success 200 {object} model.Resp_Quote
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 404 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
@@ -101,5 +103,39 @@ func (c *Controller) Wallet(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, wallet)
+
+}
+
+var upGrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+// Coin-Quote godoc
+// @Summary websocket
+// @Description get coinquote
+// @Tags coin
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} model.Resp_Quote
+// @Failure 400 {object} httputil.HTTPError
+// @Failure 404 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Router /coin/quote [patch]
+func (c *Controller) Quote(ctx *gin.Context) {
+	ws, err := upGrader.Upgrade(ctx.Writer, ctx.Request, nil)
+	if err != nil {
+		panic(err)
+	}
+	for {
+		var quote model.Resp_Quote
+		quote, err = rds.GetCoinlist()
+		if err != nil {
+			panic(err)
+		}
+		ws.WriteJSON(quote)
+		time.Sleep(10 * time.Second)
+	}
 
 }

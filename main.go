@@ -74,6 +74,7 @@ func main() {
 		{
 			coin.GET("list", c.CoinList)
 			coin.GET("wallet", c.Wallet)
+			coin.GET("quote", c.Quote)
 		}
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
