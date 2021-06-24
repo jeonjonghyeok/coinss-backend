@@ -13,3 +13,21 @@ type Wallet struct {
 	AvgBuyPriceModified bool   `json:"avg_buy_price_modified"`
 	UnitCurrency        string `json:"unit_currency"`
 }
+
+type Resp_Quote struct {
+	Status struct {
+		Timestamp string `json:"timestamp"`
+	} `json:"status"`
+	Data []struct {
+		Name   string `json:"name" form:"name" binding:"required"`
+		Symbol string `json:"symbol" form:"symbol" binding:"required"`
+		Quote  struct {
+			Usd struct {
+				Price float32 `json:"price"`
+			} `json:"USD"`
+			BTC struct {
+				Price float32 `json:"price"`
+			} `json:"BTC"`
+		} `json:"quote"`
+	} `json:"data"`
+}

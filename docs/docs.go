@@ -50,7 +50,48 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/rds.Resp_Quote"
+                            "$ref": "#/definitions/model.Resp_Quote"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/coin/quote": {
+            "patch": {
+                "description": "get coinquote",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "coin"
+                ],
+                "summary": "websocket",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Resp_Quote"
                         }
                     },
                     "400": {
@@ -258,6 +299,58 @@ var doc = `{
                 }
             }
         },
+        "model.Resp_Quote": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "name",
+                            "symbol"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "quote": {
+                                "type": "object",
+                                "properties": {
+                                    "BTC": {
+                                        "type": "object",
+                                        "properties": {
+                                            "price": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    },
+                                    "USD": {
+                                        "type": "object",
+                                        "properties": {
+                                            "price": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "symbol": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "status": {
+                    "type": "object",
+                    "properties": {
+                        "timestamp": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "model.User": {
             "type": "object",
             "required": [
@@ -315,58 +408,6 @@ var doc = `{
                 },
                 "unit_currency": {
                     "type": "string"
-                }
-            }
-        },
-        "rds.Resp_Quote": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "required": [
-                            "name",
-                            "symbol"
-                        ],
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "quote": {
-                                "type": "object",
-                                "properties": {
-                                    "BTC": {
-                                        "type": "object",
-                                        "properties": {
-                                            "price": {
-                                                "type": "number"
-                                            }
-                                        }
-                                    },
-                                    "USD": {
-                                        "type": "object",
-                                        "properties": {
-                                            "price": {
-                                                "type": "number"
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "symbol": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "status": {
-                    "type": "object",
-                    "properties": {
-                        "timestamp": {
-                            "type": "string"
-                        }
-                    }
                 }
             }
         }

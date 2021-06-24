@@ -18,6 +18,39 @@ definitions:
         example: status bad request
         type: string
     type: object
+  model.Resp_Quote:
+    properties:
+      data:
+        items:
+          properties:
+            name:
+              type: string
+            quote:
+              properties:
+                BTC:
+                  properties:
+                    price:
+                      type: number
+                  type: object
+                USD:
+                  properties:
+                    price:
+                      type: number
+                  type: object
+              type: object
+            symbol:
+              type: string
+          required:
+          - name
+          - symbol
+          type: object
+        type: array
+      status:
+        properties:
+          timestamp:
+            type: string
+        type: object
+    type: object
   model.User:
     properties:
       access_key:
@@ -61,39 +94,6 @@ definitions:
       unit_currency:
         type: string
     type: object
-  rds.Resp_Quote:
-    properties:
-      data:
-        items:
-          properties:
-            name:
-              type: string
-            quote:
-              properties:
-                BTC:
-                  properties:
-                    price:
-                      type: number
-                  type: object
-                USD:
-                  properties:
-                    price:
-                      type: number
-                  type: object
-              type: object
-            symbol:
-              type: string
-          required:
-          - name
-          - symbol
-          type: object
-        type: array
-      status:
-        properties:
-          timestamp:
-            type: string
-        type: object
-    type: object
 host: localhost:5000
 info:
   contact:
@@ -119,7 +119,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/rds.Resp_Quote'
+            $ref: '#/definitions/model.Resp_Quote'
         "400":
           description: Bad Request
           schema:
@@ -133,6 +133,33 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: Coin-List
+      tags:
+      - coin
+  /coin/quote:
+    patch:
+      consumes:
+      - application/json
+      description: get coinquote
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Resp_Quote'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: websocket
       tags:
       - coin
   /coin/wallet:

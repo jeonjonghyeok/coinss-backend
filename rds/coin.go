@@ -5,9 +5,10 @@ import (
 	"log"
 
 	redis "github.com/go-redis/redis"
+	"github.com/jeonjonghyeok/coinss-backend/model"
 )
 
-func GetCoinlist() (RespQuote Resp_Quote, err error) {
+func GetCoinlist() (RespQuote model.Resp_Quote, err error) {
 
 	rds_client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379", // 접근 url 및 port
