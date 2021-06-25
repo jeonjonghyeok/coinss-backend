@@ -1,8 +1,10 @@
 package model
 
 type Coin struct {
-	Name   string `form:"name" json:"name" example:"bitcoin" binding:"required"`
-	Symbol string `form:"symbol" json:"symbol" example:"btc" binding:"required"`
+	Market        string `form:"market" json:"market" binding:"required"`
+	KoreanName    string `form:"korean_name" json:"korean_name" binding:"required"`
+	EnglishName   string `form:"english_name" json:"english_name" binding:"required"`
+	MarketWarning string `form:"market_warning" json:"market_warning" binding:"required"`
 }
 
 type Wallet struct {

@@ -21,20 +21,18 @@ import (
 // @Tags coin
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} model.Resp_Quote
+// @Success 200 {object} model.Coin
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 404 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
 // @Router /coin/list [get]
 func (c *Controller) CoinList(ctx *gin.Context) {
-	respQuote, err := rds.GetCoinlist()
+	coin, err := rds.GetCoin()
 	if err != nil {
 		panic(err)
 	}
-	coinlist := respQuote.Data
 
-	ctx.JSON(http.StatusOK, coinlist)
-
+	ctx.JSON(http.StatusOK, coin)
 }
 
 type header struct {
@@ -137,5 +135,4 @@ func (c *Controller) Quote(ctx *gin.Context) {
 		ws.WriteJSON(quote)
 		time.Sleep(10 * time.Second)
 	}
-
 }
