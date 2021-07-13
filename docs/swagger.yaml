@@ -18,6 +18,22 @@ definitions:
         example: status bad request
         type: string
     type: object
+  model.Coin:
+    properties:
+      english_name:
+        type: string
+      korean_name:
+        type: string
+      market:
+        type: string
+      market_warning:
+        type: string
+    required:
+    - english_name
+    - korean_name
+    - market
+    - market_warning
+    type: object
   model.Resp_Quote:
     properties:
       data:
@@ -119,7 +135,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Resp_Quote'
+            $ref: '#/definitions/model.Coin'
         "400":
           description: Bad Request
           schema:

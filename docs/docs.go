@@ -50,7 +50,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Resp_Quote"
+                            "$ref": "#/definitions/model.Coin"
                         }
                     },
                     "400": {
@@ -296,6 +296,29 @@ var doc = `{
                 "message": {
                     "type": "string",
                     "example": "status bad request"
+                }
+            }
+        },
+        "model.Coin": {
+            "type": "object",
+            "required": [
+                "english_name",
+                "korean_name",
+                "market",
+                "market_warning"
+            ],
+            "properties": {
+                "english_name": {
+                    "type": "string"
+                },
+                "korean_name": {
+                    "type": "string"
+                },
+                "market": {
+                    "type": "string"
+                },
+                "market_warning": {
+                    "type": "string"
                 }
             }
         },
