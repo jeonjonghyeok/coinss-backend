@@ -1,10 +1,13 @@
 package model
 
 type Coin struct {
-	Market        string `form:"market" json:"market" binding:"required"`
-	KoreanName    string `form:"korean_name" json:"korean_name" binding:"required"`
-	EnglishName   string `form:"english_name" json:"english_name" binding:"required"`
-	MarketWarning string `form:"market_warning" json:"market_warning" binding:"required"`
+	Market      string  `json:"market"`
+	Symbol      string  `json:"symbol"`
+	Price       float32 `json:"price"`
+	Description string  `json:"description"`
+	HighPrice   float32 `json:"high_price"`
+	LowPrice    float32 `json:"low_price"`
+	ChangeRate  float32 `json:"change_rate"`
 }
 
 type Wallet struct {
@@ -16,6 +19,7 @@ type Wallet struct {
 	UnitCurrency        string `json:"unit_currency"`
 }
 
+//coin marketcap
 type Resp_Quote struct {
 	Status struct {
 		Timestamp string `json:"timestamp"`

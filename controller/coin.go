@@ -26,8 +26,8 @@ import (
 // @Failure 404 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
 // @Router /coin/list [get]
-func (c *Controller) CoinList(ctx *gin.Context) {
-	coin, err := rds.GetCoin()
+func (c *Controller) Coins(ctx *gin.Context) {
+	coin, err := rds.GetCoins()
 	if err != nil {
 		panic(err)
 	}

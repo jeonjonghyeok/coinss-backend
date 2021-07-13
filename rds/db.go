@@ -10,24 +10,29 @@ import (
 	"github.com/jeonjonghyeok/coinss-backend/model"
 )
 
-func Connect() error {
+var rds *redis.Client
+
+func Start() {
+	DB()
+	//go GetMarketPrice(rds)
+	//time.Sleep(time.Second * 2)
+	//go readPump(rds_client)
+}
+
+func DB() {
+	if rds == nil {
+		log.Println("rds nil")
+	}
 	log.Println("RDS Connect")
-	rds_client := redis.NewClient(&redis.Options{
+	rds = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379", // 접근 url 및 port
 		Password: "",               // password ""값은 없다는 뜻
 		DB:       0,                // 기본 DB 사용
 	})
-
-	_, err := rds_client.Ping().Result()
+	_, err := rds.Ping().Result()
 	if err != nil {
 		panic(err)
 	}
-
-	go GetMarketPrice(rds_client)
-	time.Sleep(time.Second * 2)
-	//go readPump(rds_client)
-
-	return err
 }
 
 func readPump(rds_client *redis.Client) {
