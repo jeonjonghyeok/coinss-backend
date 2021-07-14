@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-redis/redis"
+	redis "github.com/go-redis/redis"
 )
 
 const (
@@ -20,6 +20,7 @@ const (
 	URL     = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"
 )
 
+/*
 func GetMarketPrice(rds_client *redis.Client) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", URL, nil)
@@ -38,7 +39,7 @@ func GetMarketPrice(rds_client *redis.Client) {
 	req.URL.RawQuery = q.Encode()
 
 	for {
-
+		fmt.Println("err ago")
 		resp, err := client.Do(req)
 		if err != nil {
 			fmt.Println("Error sending request to server")
@@ -47,6 +48,45 @@ func GetMarketPrice(rds_client *redis.Client) {
 		fmt.Println(resp.Status)
 		respBody, _ := ioutil.ReadAll(resp.Body)
 
+		fmt.Println("err after")
+		err = rds_client.Set("price", respBody, 0).Err()
+		if err != nil {
+			log.Println(err)
+		}
+
+		time.Sleep(time.Second * 60)
+	}
+
+}
+*/
+func GetMarketPrice(rds_client *redis.Client) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", URL, nil)
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+
+	q := url.Values{}
+	q.Add("start", START)
+	q.Add("limit", LIMIT)
+	q.Add("convert", CONVERT)
+
+	req.Header.Set("Accepts", "application/json")
+	req.Header.Add("X-CMC_PRO_API_KEY", TOKEN)
+	req.URL.RawQuery = q.Encode()
+
+	for {
+		fmt.Println("err ago")
+		resp, err := client.Do(req)
+		if err != nil {
+			fmt.Println("Error sending request to server")
+			os.Exit(1)
+		}
+		fmt.Println(resp.Status)
+		respBody, _ := ioutil.ReadAll(resp.Body)
+
+		fmt.Println("err after")
 		err = rds_client.Set("price", respBody, 0).Err()
 		if err != nil {
 			log.Println(err)

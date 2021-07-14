@@ -38,8 +38,8 @@ func New(userID int) (string, error) {
 	return token.SignedString([]byte(mySigningKey))
 }
 
-func Parse(token string) (userID int, err error) {
-	parsed, err := jwt.ParseWithClaims(token, &customClaims{},
+func Parse(t string) (userID int, err error) {
+	parsed, err := jwt.ParseWithClaims(t, &customClaims{},
 		func(token *jwt.Token) (interface{}, error) {
 			return []byte(mySigningKey), nil
 		})
