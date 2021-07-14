@@ -7,6 +7,7 @@ import (
 	"github.com/jeonjonghyeok/coinss-backend/model"
 	"github.com/jeonjonghyeok/coinss-backend/psql"
 	t "github.com/jeonjonghyeok/coinss-backend/token"
+	"github.com/jeonjonghyeok/coinss-backend/utils"
 )
 
 // Register godoc
@@ -21,30 +22,21 @@ import (
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 404 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
-// @Router /user/signup [post]
+// @Router /api/v1/user/signup [post]
 func (c *Controller) AddUser(ctx *gin.Context) {
 	var user model.User
-	if err := ctx.BindJSON(&user); err != nil {
-		panic(err)
-	}
+	utils.HandleErr(ctx.BindJSON(&user))
 	log.Println(user)
 	exists, err := psql.IsExistUser(user.Email)
-	if err != nil {
-		panic(err)
-	}
+	utils.HandleErr(err)
 	if exists {
 		panic("duplicate user")
 	}
 
 	id, err := psql.CreateUser(user)
-	if err != nil {
-		panic(err)
-	}
+	utils.HandleErr(err)
 	token, err := t.New(id)
-	if err != nil {
-		panic(err)
-	}
-
+	utils.HandleErr(err)
 	ctx.String(200, token)
 }
 
@@ -65,7 +57,7 @@ type emailPassword struct {
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 404 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
-// @Router /user/signin [post]
+// @Router /api/v1/user/signin [post]
 func (c *Controller) SigninUser(ctx *gin.Context) {
 	var user emailPassword
 	if err := ctx.BindJSON(&user); err != nil {
@@ -73,7 +65,7 @@ func (c *Controller) SigninUser(ctx *gin.Context) {
 	}
 	log.Println(user)
 
-	id, err := psql.FindUser(user.Email, user.Password)
+	id, err := psql.FindLoginUser(user.Email, user.Password)
 	if err != nil {
 		panic("존재하지 않은 회원입니다.")
 	}

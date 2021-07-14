@@ -2,7 +2,8 @@ package model
 
 type Coin struct {
 	Market      string  `json:"market"`
-	Symbol      string  `json:"symbol"`
+	KoreanName  string  `json:"korean_name"`
+	EnglishName string  `json:"english_name"`
 	Price       float32 `json:"price"`
 	Description string  `json:"description"`
 	HighPrice   float32 `json:"high_price"`

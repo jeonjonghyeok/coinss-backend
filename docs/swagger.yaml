@@ -1,4 +1,3 @@
-basePath: /api/v1
 definitions:
   controller.emailPassword:
     properties:
@@ -8,6 +7,14 @@ definitions:
       password:
         example: "123"
         type: string
+    type: object
+  controller.favorite:
+    properties:
+      name:
+        example: Bitcoin
+        type: string
+    required:
+    - name
     type: object
   httputil.HTTPError:
     properties:
@@ -20,52 +27,22 @@ definitions:
     type: object
   model.Coin:
     properties:
+      change_rate:
+        type: number
+      description:
+        type: string
       english_name:
         type: string
+      high_price:
+        type: number
       korean_name:
         type: string
+      low_price:
+        type: number
       market:
         type: string
-      market_warning:
-        type: string
-    required:
-    - english_name
-    - korean_name
-    - market
-    - market_warning
-    type: object
-  model.Resp_Quote:
-    properties:
-      data:
-        items:
-          properties:
-            name:
-              type: string
-            quote:
-              properties:
-                BTC:
-                  properties:
-                    price:
-                      type: number
-                  type: object
-                USD:
-                  properties:
-                    price:
-                      type: number
-                  type: object
-              type: object
-            symbol:
-              type: string
-          required:
-          - name
-          - symbol
-          type: object
-        type: array
-      status:
-        properties:
-          timestamp:
-            type: string
-        type: object
+      price:
+        type: number
     type: object
   model.User:
     properties:
@@ -81,9 +58,6 @@ definitions:
       password:
         example: "123"
         type: string
-      phone_number:
-        example: 010-1234-5678
-        type: string
       secret_key:
         example: 2y0BcdVYH48Hxc8SEwfOucxAqMoL623K70j6OCWa
         type: string
@@ -92,7 +66,6 @@ definitions:
     - email
     - name
     - password
-    - phone_number
     - secret_key
     type: object
   model.Wallet:
@@ -110,21 +83,84 @@ definitions:
       unit_currency:
         type: string
     type: object
-host: localhost:5000
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
-  description: This is a sample server celler server.
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
-  title: Swagger Example API
-  version: "1.0"
+  contact: {}
 paths:
-  /coin/list:
+  /api/v1/coin/favorite:
+    post:
+      consumes:
+      - application/json
+      description: 관심코인 등록
+      operationId: post-coin-favorite
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Faavorite
+        in: body
+        name: favorite
+        required: true
+        schema:
+          $ref: '#/definitions/controller.favorite'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Register Favority Coin
+      tags:
+      - coin
+  /api/v1/coin/favorites:
+    get:
+      consumes:
+      - application/json
+      description: 관심코인 조회
+      operationId: post-coin-favorites
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Register Favority Coin
+      tags:
+      - coin
+  /api/v1/coin/list:
     get:
       consumes:
       - application/json
@@ -151,34 +187,7 @@ paths:
       summary: Coin-List
       tags:
       - coin
-  /coin/quote:
-    patch:
-      consumes:
-      - application/json
-      description: get coinquote
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Resp_Quote'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-      summary: websocket
-      tags:
-      - coin
-  /coin/wallet:
+  /api/v1/coin/wallet:
     get:
       consumes:
       - application/json
@@ -211,7 +220,7 @@ paths:
       summary: Coin-Wallet
       tags:
       - coin
-  /user/signin:
+  /api/v1/user/signin:
     post:
       consumes:
       - application/json
@@ -246,7 +255,7 @@ paths:
       summary: Login
       tags:
       - user
-  /user/signup:
+  /api/v1/user/signup:
     post:
       consumes:
       - application/json

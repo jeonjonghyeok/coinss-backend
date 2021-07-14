@@ -5,14 +5,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 	"github.com/jeonjonghyeok/coinss-backend/model"
 	"github.com/jeonjonghyeok/coinss-backend/psql"
 	"github.com/jeonjonghyeok/coinss-backend/rds"
 	upbit "github.com/jeonjonghyeok/coinss-backend/token"
+	"github.com/jeonjonghyeok/coinss-backend/utils"
 )
 
 // Coin-List godoc
@@ -21,18 +20,22 @@ import (
 // @Tags coin
 // @Accept  json
 // @Produce  json
+// @Param favorite body favorite true "Faavorite"
 // @Success 200 {object} model.Coin
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 404 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
-// @Router /coin/list [get]
+// @Router /api/v1/coin/list [get]
 func (c *Controller) Coins(ctx *gin.Context) {
-	coin, err := rds.GetCoins()
+	var f favorite
+	utils.HandleErr(ctx.BindJSON(&f))
+
+	coins, err := rds.GetCoins(f.Name)
 	if err != nil {
 		panic(err)
 	}
 
-	ctx.JSON(http.StatusOK, coin)
+	ctx.JSON(http.StatusOK, coins)
 }
 
 type header struct {
@@ -50,11 +53,9 @@ type header struct {
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 404 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
-// @Router /coin/wallet [get]
+// @Router /api/v1/coin/wallet [get]
 func (c *Controller) Wallet(ctx *gin.Context) {
 	const URL = "https://api.upbit.com/v1/accounts"
-	var secret_key string
-	var access_key string
 
 	h := header{}
 	if err := ctx.ShouldBindHeader(&h); err != nil {
@@ -65,13 +66,8 @@ func (c *Controller) Wallet(ctx *gin.Context) {
 		panic(err)
 	}
 
-	log.Println("id = ", id)
-	access_key, secret_key, err = psql.FindUserKey(id)
-	log.Println("access_key = ", access_key)
-	log.Println("secret_key = ", secret_key)
-
-	token, err := upbit.NewUpbit(id, access_key, secret_key)
-	log.Println("upbit token = ", token)
+	user, err := psql.FindUserById(id)
+	token, err := upbit.NewUpbit(id, user.Accesskey, user.Secretkey)
 	if err != nil {
 		panic(err)
 	}
@@ -104,35 +100,73 @@ func (c *Controller) Wallet(ctx *gin.Context) {
 
 }
 
-var upGrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
+type favorite struct {
+	Name string `form:"name" json:"name" example:"Bitcoin" binding:"required"`
 }
 
-// Coin-Quote godoc
-// @Summary websocket
-// @Description get coinquote
+// Favorite godoc
+// @Summary Register Favority Coin
+// @Description 관심코인 등록
+// @ID post-coin-favorite
 // @Tags coin
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} model.Resp_Quote
+// @Param token header string true "token"
+// @Param favorite body favorite true "Faavorite"
+// @Success 200 {object} model.User
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 404 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
-// @Router /coin/quote [patch]
-func (c *Controller) Quote(ctx *gin.Context) {
-	ws, err := upGrader.Upgrade(ctx.Writer, ctx.Request, nil)
-	if err != nil {
-		panic(err)
+// @Router /api/v1/coin/favorite [post]
+func (c *Controller) Favorite(ctx *gin.Context) {
+	h := header{}
+	utils.HandleErr(ctx.ShouldBindHeader(&h))
+
+	id, err := upbit.Parse(h.Token)
+	utils.HandleErr(err)
+
+	var f favorite
+	utils.HandleErr(ctx.BindJSON(&f))
+	names := psql.GetFavorites(id)
+	if names == "" {
+		names = f.Name
+	} else {
+		names += "," + f.Name
 	}
-	for {
-		var quote model.Resp_Quote
-		quote, err = rds.GetCoinlist()
-		if err != nil {
-			panic(err)
-		}
-		ws.WriteJSON(quote)
-		time.Sleep(10 * time.Second)
+	utils.HandleErr(psql.Favorite(id, names))
+	ctx.String(http.StatusOK, "Success")
+}
+
+// Favorite godoc
+// @Summary Register Favority Coin
+// @Description 관심코인 조회
+// @ID post-coin-favorites
+// @Tags coin
+// @Accept  json
+// @Produce  json
+// @Param token header string true "token"
+// @Success 200 {object} model.User
+// @Failure 400 {object} httputil.HTTPError
+// @Failure 404 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Router /api/v1/coin/favorites [get]
+func (c *Controller) Favorites(ctx *gin.Context) {
+	log.Println("favorites call")
+	h := header{}
+	utils.HandleErr(ctx.ShouldBindHeader(&h))
+
+	id, err := upbit.Parse(h.Token)
+	utils.HandleErr(err)
+
+	names := psql.GetFavorites(id)
+	if names == "" {
+		ctx.JSON(http.StatusOK, nil)
+		return
 	}
+	log.Println("names:", names)
+	coins, err := rds.GetCoins(names)
+	utils.HandleErr(err)
+	log.Println("coins:", coins)
+
+	ctx.JSON(http.StatusOK, coins)
 }

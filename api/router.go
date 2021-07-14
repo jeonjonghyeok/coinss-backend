@@ -56,12 +56,12 @@ func Start() {
 		coin := v1.Group("/coin")
 		{
 			coin.GET("list", c.Coins)
-			//coin.GET("list", c.CoinDaily)
 			coin.GET("wallet", c.Wallet)
-			coin.GET("quote", c.Quote)
-			//coin.GET("favorites", c.Favorites)
+			//coin.GET("quote", c.Quote)
+			coin.POST("favorite", c.Favorite)
+			coin.GET("favorites", c.Favorites)
 		}
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.Run(":5000")
+	r.Run("localhost:5000")
 }

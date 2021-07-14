@@ -1,18 +1,11 @@
 package psql
 
-/*
-func GetCoin() (coin []resCoin, err error) {
-	const URL = "https://api.upbit.com/v1/candles/days"
-
-	resp, err := http.Get(URL)
-	if err != nil {
-		panic(err)
-	}
-	respBody, _ := ioutil.ReadAll(resp.Body)
-	log.Println(string(respBody))
-
-	err = json.Unmarshal([]byte(respBody), &coin)
+func Favorite(id int, names string) (err error) {
+	_, err = db.Exec(`UPDATE public.users SET favorites=$1 WHERE uid=$2`, names, id)
 	return
 }
 
-*/
+func GetFavorites(id int) (name string) {
+	db.QueryRow(`SELECT favorites FROM public.users WHERE uid=$1`, id).Scan(&name)
+	return
+}

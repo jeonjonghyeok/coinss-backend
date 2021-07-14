@@ -1,40 +1,33 @@
 package rds
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"time"
-
 	redis "github.com/go-redis/redis"
-	"github.com/jeonjonghyeok/coinss-backend/model"
 )
 
 var rds *redis.Client
 
 func Start() {
-	DB()
-	//go GetMarketPrice(rds)
-	//time.Sleep(time.Second * 2)
+	go setCoins()
 	//go readPump(rds_client)
 }
 
-func DB() {
+func db() *redis.Client {
 	if rds == nil {
-		log.Println("rds nil")
+		rds = redis.NewClient(&redis.Options{
+			Addr:     "localhost:6379", // 접근 url 및 port
+			Password: "",               // password ""값은 없다는 뜻
+			DB:       0,                // 기본 DB 사용
+		})
+		_, err := rds.Ping().Result()
+		if err != nil {
+			panic(err)
+		}
+
 	}
-	log.Println("RDS Connect")
-	rds = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379", // 접근 url 및 port
-		Password: "",               // password ""값은 없다는 뜻
-		DB:       0,                // 기본 DB 사용
-	})
-	_, err := rds.Ping().Result()
-	if err != nil {
-		panic(err)
-	}
+	return rds
 }
 
+/*
 func readPump(rds_client *redis.Client) {
 	var RespQuote model.Resp_Quote
 	for {
@@ -54,3 +47,5 @@ func readPump(rds_client *redis.Client) {
 	}
 
 }
+
+*/

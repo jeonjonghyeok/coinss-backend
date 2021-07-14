@@ -18,22 +18,124 @@ var doc = `{
     "info": {
         "description": "{{.Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
+        "contact": {},
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/coin/list": {
+        "/api/v1/coin/favorite": {
+            "post": {
+                "description": "관심코인 등록",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "coin"
+                ],
+                "summary": "Register Favority Coin",
+                "operationId": "post-coin-favorite",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Faavorite",
+                        "name": "favorite",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.favorite"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/coin/favorites": {
+            "get": {
+                "description": "관심코인 조회",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "coin"
+                ],
+                "summary": "Register Favority Coin",
+                "operationId": "post-coin-favorites",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/coin/list": {
             "get": {
                 "description": "get coinlist",
                 "consumes": [
@@ -74,48 +176,7 @@ var doc = `{
                 }
             }
         },
-        "/coin/quote": {
-            "patch": {
-                "description": "get coinquote",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "coin"
-                ],
-                "summary": "websocket",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Resp_Quote"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/coin/wallet": {
+        "/api/v1/coin/wallet": {
             "get": {
                 "description": "get coinwallet",
                 "consumes": [
@@ -165,7 +226,7 @@ var doc = `{
                 }
             }
         },
-        "/user/signin": {
+        "/api/v1/user/signin": {
             "post": {
                 "description": "로그인",
                 "consumes": [
@@ -218,7 +279,7 @@ var doc = `{
                 }
             }
         },
-        "/user/signup": {
+        "/api/v1/user/signup": {
             "post": {
                 "description": "회원가입",
                 "consumes": [
@@ -286,6 +347,18 @@ var doc = `{
                 }
             }
         },
+        "controller.favorite": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Bitcoin"
+                }
+            }
+        },
         "httputil.HTTPError": {
             "type": "object",
             "properties": {
@@ -301,76 +374,30 @@ var doc = `{
         },
         "model.Coin": {
             "type": "object",
-            "required": [
-                "english_name",
-                "korean_name",
-                "market",
-                "market_warning"
-            ],
             "properties": {
+                "change_rate": {
+                    "type": "number"
+                },
+                "description": {
+                    "type": "string"
+                },
                 "english_name": {
                     "type": "string"
+                },
+                "high_price": {
+                    "type": "number"
                 },
                 "korean_name": {
                     "type": "string"
                 },
+                "low_price": {
+                    "type": "number"
+                },
                 "market": {
                     "type": "string"
                 },
-                "market_warning": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.Resp_Quote": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "required": [
-                            "name",
-                            "symbol"
-                        ],
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "quote": {
-                                "type": "object",
-                                "properties": {
-                                    "BTC": {
-                                        "type": "object",
-                                        "properties": {
-                                            "price": {
-                                                "type": "number"
-                                            }
-                                        }
-                                    },
-                                    "USD": {
-                                        "type": "object",
-                                        "properties": {
-                                            "price": {
-                                                "type": "number"
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "symbol": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "status": {
-                    "type": "object",
-                    "properties": {
-                        "timestamp": {
-                            "type": "string"
-                        }
-                    }
+                "price": {
+                    "type": "number"
                 }
             }
         },
@@ -381,7 +408,6 @@ var doc = `{
                 "email",
                 "name",
                 "password",
-                "phone_number",
                 "secret_key"
             ],
             "properties": {
@@ -400,10 +426,6 @@ var doc = `{
                 "password": {
                     "type": "string",
                     "example": "123"
-                },
-                "phone_number": {
-                    "type": "string",
-                    "example": "010-1234-5678"
                 },
                 "secret_key": {
                     "type": "string",
@@ -448,12 +470,12 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "1.0",
-	Host:        "localhost:5000",
-	BasePath:    "/api/v1",
+	Version:     "",
+	Host:        "",
+	BasePath:    "",
 	Schemes:     []string{},
-	Title:       "Swagger Example API",
-	Description: "This is a sample server celler server.",
+	Title:       "",
+	Description: "",
 }
 
 type s struct{}

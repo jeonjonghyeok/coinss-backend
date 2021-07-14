@@ -11,25 +11,25 @@ func CreateUser(u model.User) (id int, err error) {
 	if err != nil {
 		return 0, err
 	}
-	err = db.QueryRow(`INSERT INTO public.user (email, password, name, phone_number, access_key, secret_key) 
-	VALUES ($1, $2, $3, $4, $5, $6) RETURNING uid
-	`, u.Email, passwordHash, u.Name, u.PhoneNumber, u.Accesskey, u.Secretkey).Scan(&id)
+	err = db.QueryRow(`INSERT INTO public.users (email, password, name, access_key, secret_key) 
+	VALUES ($1, $2, $3, $4, $5 ) RETURNING uid
+	`, u.Email, passwordHash, u.Name, u.Accesskey, u.Secretkey).Scan(&id)
 	return
 }
 
 func IsExistUser(email string) (exists bool, err error) {
-	err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM public.user where email = $1)`, email).Scan(&exists)
+	err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM public.users where email = $1)`, email).Scan(&exists)
 	return
-
+}
+func IsExistUserById(id int) (exists bool, err error) {
+	err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM public.users where uid = $1)`, id).Scan(&exists)
+	return
 }
 
-func FindUser(email, password string) (id int, err error) {
+func FindLoginUser(email, password string) (id int, err error) {
 	var passwordHash string
-	err = db.QueryRow(`SELECT uid, password FROM public.user
+	db.QueryRow(`SELECT uid, password FROM public.users
 	WHERE email = $1`, email).Scan(&id, &passwordHash)
-	if err != nil {
-		return 0, err
-	}
 	if err := bcrypt.CompareHashAndPassword(
 		[]byte(passwordHash), []byte(password)); err != nil {
 		return 0, err
@@ -37,11 +37,7 @@ func FindUser(email, password string) (id int, err error) {
 	return
 }
 
-func FindUserKey(id int) (access_key, secret_key string, err error) {
-	err = db.QueryRow(`SELECT access_key, secret_key FROM public.user WHERE uid = $1`, id).Scan(&access_key, &secret_key)
-	if err != nil {
-		return "", "", err
-	}
-
+func FindUserById(id int) (user model.User, err error) {
+	db.QueryRow(`SELECT email, password, name, access_key, secret_key FROM public.users WHERE uid = $1`, id).Scan(&user.Email, &user.Password, &user.Name, &user.Accesskey, &user.Secretkey)
 	return
 }
