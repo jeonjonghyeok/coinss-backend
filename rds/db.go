@@ -1,12 +1,15 @@
 package rds
 
 import (
+	"fmt"
+
 	redis "github.com/go-redis/redis"
 )
 
 var rds *redis.Client
 
 func Start() {
+	fmt.Println("Redis Connect")
 	go setCoins()
 	//go readPump(rds_client)
 }

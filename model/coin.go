@@ -9,6 +9,7 @@ type Coin struct {
 	HighPrice   float32 `json:"high_price"`
 	LowPrice    float32 `json:"low_price"`
 	ChangeRate  float32 `json:"change_rate"`
+	Change      string  `json:"change"`
 }
 
 type Wallet struct {

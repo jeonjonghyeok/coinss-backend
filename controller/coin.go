@@ -151,10 +151,8 @@ func (c *Controller) Favorite(ctx *gin.Context) {
 // @Failure 500 {object} httputil.HTTPError
 // @Router /api/v1/coin/favorites [get]
 func (c *Controller) Favorites(ctx *gin.Context) {
-	log.Println("favorites call")
 	h := header{}
 	utils.HandleErr(ctx.ShouldBindHeader(&h))
-
 	id, err := upbit.Parse(h.Token)
 	utils.HandleErr(err)
 
@@ -163,10 +161,8 @@ func (c *Controller) Favorites(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, nil)
 		return
 	}
-	log.Println("names:", names)
 	coins, err := rds.GetCoins(names)
 	utils.HandleErr(err)
-	log.Println("coins:", coins)
 
 	ctx.JSON(http.StatusOK, coins)
 }

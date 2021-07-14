@@ -23,6 +23,8 @@ type priceResponse struct {
 	HighPrice  float32 `json:"high_price"`
 	LowPrice   float32 `json:"low_price"`
 	TradePrice float32 `json:"trade_price"`
+	ChangeRate float32 `json:"change_rate"`
+	Change     string  `json:"change"`
 }
 
 func getCoinName() (coins []*model.Coin, markets string, err error) {
@@ -39,6 +41,9 @@ func getCoinName() (coins []*model.Coin, markets string, err error) {
 	}
 
 	for _, coin := range resCoins {
+		if coin.Market[:3] != "KRW" {
+			continue
+		}
 		if markets == "" {
 			markets += coin.Market
 		} else {
@@ -87,6 +92,11 @@ func setCoins() {
 		coins[i].Price = float32(coin.TradePrice)
 		coins[i].HighPrice = coin.HighPrice
 		coins[i].LowPrice = coin.LowPrice
+		if coin.Change == "RISE" {
+			coins[i].ChangeRate = coin.ChangeRate
+		} else if coin.Change == "FALL" {
+			coins[i].ChangeRate = -coin.ChangeRate
+		}
 		coinBytes, err := json.Marshal(coins[i])
 		utils.HandleErr(err)
 		utils.HandleErr(db().Set(coins[i].EnglishName, coinBytes, 0).Err())

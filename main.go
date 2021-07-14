@@ -11,6 +11,6 @@ func main() {
 	//postgres 연결
 	psql.Start()
 	//redis 연결
-	api.Start()
 	rds.Start()
+	api.Start()
 }
