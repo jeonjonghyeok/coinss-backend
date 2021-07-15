@@ -11,7 +11,6 @@ var rds *redis.Client
 func Start() {
 	fmt.Println("Redis Connect")
 	go setCoins()
-	//go readPump(rds_client)
 }
 
 func db() *redis.Client {
@@ -29,26 +28,3 @@ func db() *redis.Client {
 	}
 	return rds
 }
-
-/*
-func readPump(rds_client *redis.Client) {
-	var RespQuote model.Resp_Quote
-	for {
-		val, err := rds_client.Get("price").Result()
-		if err != nil {
-			log.Println(err)
-			panic(err)
-		}
-		json.Unmarshal([]byte(val), &RespQuote)
-		for i := 0; i < 50; i++ {
-			fmt.Print(RespQuote.Data[i].Symbol, " ")
-			fmt.Print(RespQuote.Data[i].Name, " ")
-			fmt.Println(RespQuote.Data[i].Quote.Usd.Price)
-
-		}
-		time.Sleep(time.Second * 10)
-	}
-
-}
-
-*/

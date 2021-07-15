@@ -16,6 +16,11 @@ definitions:
     required:
     - name
     type: object
+  controller.search:
+    properties:
+      search:
+        type: string
+    type: object
   httputil.HTTPError:
     properties:
       code:
@@ -27,6 +32,8 @@ definitions:
     type: object
   model.Coin:
     properties:
+      change:
+        type: string
       change_rate:
         type: number
       description:
@@ -165,6 +172,13 @@ paths:
       consumes:
       - application/json
       description: get coinlist
+      parameters:
+      - description: Faavorite
+        in: body
+        name: favorite
+        required: true
+        schema:
+          $ref: '#/definitions/controller.favorite'
       produces:
       - application/json
       responses:
@@ -185,6 +199,41 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: Coin-List
+      tags:
+      - coin
+  /api/v1/coin/search:
+    post:
+      consumes:
+      - application/json
+      description: 검색어 저장
+      operationId: post-coin-search
+      parameters:
+      - description: Search
+        in: body
+        name: search
+        required: true
+        schema:
+          $ref: '#/definitions/controller.search'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.search'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Register Favority Coin
       tags:
       - coin
   /api/v1/coin/wallet:

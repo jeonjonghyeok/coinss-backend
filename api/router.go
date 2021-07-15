@@ -57,9 +57,9 @@ func Start() {
 		{
 			coin.GET("list", c.Coins)
 			coin.GET("wallet", c.Wallet)
-			//coin.GET("quote", c.Quote)
 			coin.POST("favorite", c.Favorite)
 			coin.GET("favorites", c.Favorites)
+			coin.POST("search", c.Search)
 		}
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

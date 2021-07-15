@@ -148,11 +148,75 @@ var doc = `{
                     "coin"
                 ],
                 "summary": "Coin-List",
+                "parameters": [
+                    {
+                        "description": "Faavorite",
+                        "name": "favorite",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.favorite"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Coin"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/coin/search": {
+            "post": {
+                "description": "검색어 저장",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "coin"
+                ],
+                "summary": "Register Favority Coin",
+                "operationId": "post-coin-search",
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "name": "search",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.search"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.search"
                         }
                     },
                     "400": {
@@ -359,6 +423,14 @@ var doc = `{
                 }
             }
         },
+        "controller.search": {
+            "type": "object",
+            "properties": {
+                "search": {
+                    "type": "string"
+                }
+            }
+        },
         "httputil.HTTPError": {
             "type": "object",
             "properties": {
@@ -375,6 +447,9 @@ var doc = `{
         "model.Coin": {
             "type": "object",
             "properties": {
+                "change": {
+                    "type": "string"
+                },
                 "change_rate": {
                     "type": "number"
                 },

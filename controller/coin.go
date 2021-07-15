@@ -166,3 +166,29 @@ func (c *Controller) Favorites(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, coins)
 }
+
+type search struct {
+	Search string `json:"search"`
+}
+
+// Search godoc
+// @Summary Register Favority Coin
+// @Description 검색어 저장
+// @ID post-coin-search
+// @Tags coin
+// @Accept  json
+// @Produce  json
+// @Param search body search true "Search"
+// @Success 200 {object} search
+// @Failure 400 {object} httputil.HTTPError
+// @Failure 404 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Router /api/v1/coin/search [post]
+func (c *Controller) Search(ctx *gin.Context) {
+	var s search
+	utils.HandleErr(ctx.BindJSON(&s))
+
+	psql.SetSearch(s.Search)
+
+	ctx.String(http.StatusOK, "Success")
+}
