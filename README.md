@@ -18,7 +18,8 @@ https://zpl.io/a7gAZqK
 
 # Backend
  - 개념/논리 아키텍처
-https://drive.google.com/file/d/1fMyBXFEyF_54T0fuL2J7nUKOeKxZLNMf/view?usp=sharing
+![image](https://user-images.githubusercontent.com/47622475/126808618-21af9cdc-1752-4a7e-9ebf-6be80b7c67e4.png)
+
 
  - ERD
 ![image](https://user-images.githubusercontent.com/47622475/126808071-9aaf2c1e-6c13-4fcd-9dc4-8d172494f4c9.png)
