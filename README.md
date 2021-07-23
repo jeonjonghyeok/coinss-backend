@@ -1,4 +1,4 @@
-# exchange-go
+# Coinss
 암호화폐 자산관리 프로젝트 06.09
 
 # 기획 / Frontend - 2명
