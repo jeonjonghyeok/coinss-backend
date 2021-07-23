@@ -12,7 +12,7 @@ https://drive.google.com/file/d/11mtaEfU_SfQSuL6VDQHW-OT-7iz68OT-/view?usp=shari
 repogitory
 https://github.com/Taewoong-H/coinss-front
 
-# 디자인 - 
+# 디자인 - 외주
  - 화면설계 제플린
 https://zpl.io/a7gAZqK
 
