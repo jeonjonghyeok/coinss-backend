@@ -9,7 +9,7 @@ https://velog.io/@taeung/COINSS-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B8%B0%E
 https://www.notion.so/4f90fce36f3d4dea8e2d90c44953116a
 https://drive.google.com/file/d/11mtaEfU_SfQSuL6VDQHW-OT-7iz68OT-/view?usp=sharing
 
-repogitory
+ - Frontend Repogitory
 https://github.com/Taewoong-H/coinss-front
 
 # 디자인 - 외주
