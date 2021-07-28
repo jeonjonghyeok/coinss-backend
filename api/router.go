@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jeonjonghyeok/coinss-backend/controller"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -33,6 +34,8 @@ func Start() {
 	//duplicate logging
 	//r.Use(gin.Logger())
 
+	r.Use(cors.Default())
+
 	r.Use(gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
 		log.Println(recovered)
 		c.String(http.StatusInternalServerError, fmt.Sprintf("error: %s", recovered))
@@ -43,7 +46,7 @@ func Start() {
 	})
 
 	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "hello coinss")
+		c.String(http.StatusOK, "hello")
 	})
 
 	v1 := r.Group("api/v1")
