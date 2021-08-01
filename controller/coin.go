@@ -28,7 +28,11 @@ import (
 // @Router /api/v1/coin/list [get]
 func (c *Controller) Coins(ctx *gin.Context) {
 	var f favorite
-	utils.HandleErr(ctx.BindJSON(&f))
+	if err := ctx.BindJSON(&f); err != nil {
+		log.Println("required name parameter")
+		ctx.String(http.StatusBadRequest, "required name parameter")
+		return
+	}
 
 	coins, err := rds.GetCoins(f.Name)
 	if err != nil {
