@@ -25,7 +25,9 @@ import (
 // @Router /api/v1/user/signup [post]
 func (c *Controller) AddUser(ctx *gin.Context) {
 	var user model.User
-	utils.HandleErr(ctx.BindJSON(&user))
+	if err := ctx.BindJSON(&user); err != nil {
+		panic(err)
+	}
 	log.Println(user)
 	exists, err := psql.IsExistUser(user.Email)
 	utils.HandleErr(err)
@@ -60,9 +62,7 @@ type emailPassword struct {
 // @Router /api/v1/user/signin [post]
 func (c *Controller) SigninUser(ctx *gin.Context) {
 	var user emailPassword
-	if err := ctx.BindJSON(&user); err != nil {
-		panic(err)
-	}
+	utils.HandleErr(ctx.BindJSON(&user))
 	log.Println(user)
 
 	id, err := psql.FindLoginUser(user.Email, user.Password)
@@ -70,8 +70,6 @@ func (c *Controller) SigninUser(ctx *gin.Context) {
 		panic("존재하지 않은 회원입니다.")
 	}
 	token, err := t.New(id)
-	if err != nil {
-		panic(err)
-	}
+	utils.HandleErr(err)
 	ctx.String(200, token)
 }

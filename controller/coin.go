@@ -28,16 +28,10 @@ import (
 // @Router /api/v1/coin/list [get]
 func (c *Controller) Coins(ctx *gin.Context) {
 	var f favorite
-	if err := ctx.BindJSON(&f); err != nil {
-		log.Println("required name parameter")
-		ctx.String(http.StatusBadRequest, "required name parameter")
-		return
-	}
+	utils.HandleErr(ctx.BindJSON(&f))
 
 	coins, err := rds.GetCoins(f.Name)
-	if err != nil {
-		panic(err)
-	}
+	utils.HandleErr(err)
 
 	ctx.JSON(http.StatusOK, coins)
 }
@@ -62,33 +56,23 @@ func (c *Controller) Wallet(ctx *gin.Context) {
 	const URL = "https://api.upbit.com/v1/accounts"
 
 	h := header{}
-	if err := ctx.ShouldBindHeader(&h); err != nil {
-		panic(err)
-	}
+	utils.HandleErr(ctx.ShouldBindHeader(&h))
 	id, err := upbit.Parse(h.Token)
-	if err != nil {
-		panic(err)
-	}
+	utils.HandleErr(err)
 
 	user, err := psql.FindUserById(id)
+	utils.HandleErr(err)
 	token, err := upbit.NewUpbit(id, user.Accesskey, user.Secretkey)
-	if err != nil {
-		panic(err)
-	}
-
+	utils.HandleErr(err)
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", URL, nil)
-	if err != nil {
-		panic(err)
-	}
+	utils.HandleErr(err)
 
 	req.Header.Set("Accepts", "application/json")
 	req.Header.Add("Authorization", "Bearer "+token)
 
 	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
+	utils.HandleErr(err)
 	log.Println(resp.Status)
 	if resp.Status == "401 Unauthorized" {
 		panic("등록되지 않은 IP주소 입니다.")
@@ -96,10 +80,7 @@ func (c *Controller) Wallet(ctx *gin.Context) {
 	respBody, _ := ioutil.ReadAll(resp.Body)
 
 	var wallet []model.Wallet
-	if err := json.Unmarshal(respBody, &wallet); err != nil {
-		panic(err)
-	}
-
+	utils.HandleErr(json.Unmarshal(respBody, &wallet))
 	ctx.JSON(http.StatusOK, wallet)
 
 }
@@ -124,6 +105,7 @@ type favorite struct {
 // @Router /api/v1/coin/favorite [post]
 func (c *Controller) Favorite(ctx *gin.Context) {
 	h := header{}
+
 	utils.HandleErr(ctx.ShouldBindHeader(&h))
 
 	id, err := upbit.Parse(h.Token)
