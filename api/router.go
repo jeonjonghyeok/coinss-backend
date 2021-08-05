@@ -34,7 +34,10 @@ func Start() {
 	//duplicate logging
 	//r.Use(gin.Logger())
 
-	r.Use(cors.Default())
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowMethods = []string{"PUT", "PATCH", "POST", "GET"}
+	r.Use(cors.New(config))
 
 	r.Use(gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
 		log.Println(recovered)
