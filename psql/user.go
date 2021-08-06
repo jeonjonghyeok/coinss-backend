@@ -11,24 +11,24 @@ func CreateUser(u model.User) (id int, err error) {
 	if err != nil {
 		return 0, err
 	}
-	err = db.QueryRow(`INSERT INTO public.users (email, password, name, access_key, secret_key) 
+	err = DB().QueryRow(`INSERT INTO public.users (email, password, name, access_key, secret_key) 
 	VALUES ($1, $2, $3, $4, $5 ) RETURNING uid
 	`, u.Email, passwordHash, u.Name, u.Accesskey, u.Secretkey).Scan(&id)
 	return
 }
 
 func IsExistUser(email string) (exists bool, err error) {
-	err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM public.users where email = $1)`, email).Scan(&exists)
+	err = DB().QueryRow(`SELECT EXISTS(SELECT 1 FROM public.users where email = $1)`, email).Scan(&exists)
 	return
 }
 func IsExistUserById(id int) (exists bool, err error) {
-	err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM public.users where uid = $1)`, id).Scan(&exists)
+	err = DB().QueryRow(`SELECT EXISTS(SELECT 1 FROM public.users where uid = $1)`, id).Scan(&exists)
 	return
 }
 
 func FindLoginUser(email, password string) (id int, err error) {
 	var passwordHash string
-	db.QueryRow(`SELECT uid, password FROM public.users
+	DB().QueryRow(`SELECT uid, password FROM public.users
 	WHERE email = $1`, email).Scan(&id, &passwordHash)
 	if err := bcrypt.CompareHashAndPassword(
 		[]byte(passwordHash), []byte(password)); err != nil {
@@ -38,6 +38,6 @@ func FindLoginUser(email, password string) (id int, err error) {
 }
 
 func FindUserById(id int) (user model.User, err error) {
-	db.QueryRow(`SELECT email, password, name, access_key, secret_key FROM public.users WHERE uid = $1`, id).Scan(&user.Email, &user.Password, &user.Name, &user.Accesskey, &user.Secretkey)
+	DB().QueryRow(`SELECT email, password, name, access_key, secret_key FROM public.users WHERE uid = $1`, id).Scan(&user.Email, &user.Password, &user.Name, &user.Accesskey, &user.Secretkey)
 	return
 }

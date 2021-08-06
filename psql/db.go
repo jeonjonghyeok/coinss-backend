@@ -20,30 +20,25 @@ var db *sql.DB
 var listener *pq.Listener
 var ErrUnauthorized = errors.New("db: unauthorized")
 
-func Start() {
-	if err := Connect(fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-		DB_USER, DB_PASSWORD, DB_NAME)); err != nil {
-		log.Fatal(err)
+func DB() *sql.DB {
+	if db == nil {
+		url := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
+			DB_USER, DB_PASSWORD, DB_NAME)
+		c, err := sql.Open("postgres", url)
+		if err != nil {
+			log.Println(err)
+			panic(ErrUnauthorized)
+		}
+		db = c
+
+		listener = pq.NewListener(url,
+			10*time.Second, time.Minute, func(ev pq.ListenerEventType, err error) {
+				if err != nil {
+					log.Println(err)
+					panic(ErrUnauthorized)
+				}
+			})
 	}
-}
-
-func Connect(url string) error {
-	log.Println("PSQL Connect")
-	c, err := sql.Open("postgres", url)
-	if err != nil {
-		log.Println(err)
-		panic(ErrUnauthorized)
-	}
-	db = c
-
-	listener = pq.NewListener(url,
-		10*time.Second, time.Minute, func(ev pq.ListenerEventType, err error) {
-			if err != nil {
-				log.Println(err)
-				panic(ErrUnauthorized)
-			}
-		})
-
-	return nil
+	return db
 
 }

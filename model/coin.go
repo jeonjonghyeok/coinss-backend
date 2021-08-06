@@ -1,5 +1,9 @@
 package model
 
+type Favorite struct {
+	Name string `form:"name" json:"name" example:"Bitcoin" binding:"required"`
+}
+
 type Coin struct {
 	Market      string  `json:"market"`
 	KoreanName  string  `json:"korean_name"`

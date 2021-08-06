@@ -47,12 +47,12 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "description": "Faavorite",
+                        "description": "Favorite",
                         "name": "favorite",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.favorite"
+                            "$ref": "#/definitions/model.Favorite"
                         }
                     }
                 ],
@@ -96,8 +96,8 @@ var doc = `{
                 "tags": [
                     "coin"
                 ],
-                "summary": "Register Favority Coin",
-                "operationId": "post-coin-favorites",
+                "summary": "Get Favorites",
+                "operationId": "get-coin-favorites",
                 "parameters": [
                     {
                         "type": "string",
@@ -135,9 +135,9 @@ var doc = `{
                 }
             }
         },
-        "/api/v1/coin/list": {
-            "get": {
-                "description": "get coinlist",
+        "/api/v1/coin/info": {
+            "post": {
+                "description": "get coins",
                 "consumes": [
                     "application/json"
                 ],
@@ -150,15 +150,56 @@ var doc = `{
                 "summary": "Coin-List",
                 "parameters": [
                     {
-                        "description": "Faavorite",
+                        "description": "Favorite",
                         "name": "favorite",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.favorite"
+                            "$ref": "#/definitions/model.Favorite"
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Coin"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/coin/list": {
+            "get": {
+                "description": "get coin list",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "coin"
+                ],
+                "summary": "Coin-Info",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -199,7 +240,7 @@ var doc = `{
                 "tags": [
                     "coin"
                 ],
-                "summary": "Register Favority Coin",
+                "summary": "Save Search",
                 "operationId": "post-coin-search",
                 "parameters": [
                     {
@@ -411,18 +452,6 @@ var doc = `{
                 }
             }
         },
-        "controller.favorite": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "example": "Bitcoin"
-                }
-            }
-        },
         "controller.search": {
             "type": "object",
             "properties": {
@@ -473,6 +502,18 @@ var doc = `{
                 },
                 "price": {
                     "type": "number"
+                }
+            }
+        },
+        "model.Favorite": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Bitcoin"
                 }
             }
         },

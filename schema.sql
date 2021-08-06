@@ -14,3 +14,8 @@ CREATE TABLE public.search (
     search varchar (200),
     count int
 );
+
+CREATE TABLE public.coins (
+    cid serial PRIMARY KEY,
+    name varchar(100),
+)

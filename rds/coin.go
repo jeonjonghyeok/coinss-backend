@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/jeonjonghyeok/coinss-backend/model"
 	"github.com/jeonjonghyeok/coinss-backend/utils"
@@ -80,12 +81,16 @@ func getPriceByName(markets string) (coins []*priceResponse, err error) {
 	return
 }
 
-func setCoins() {
+func GetCoins() ([]*model.Coin, error) {
 	coins, markets, err := getCoinName()
-	utils.HandleErr(err)
+	if err != nil {
+		return nil, err
+	}
 
 	price_coins, err := getPriceByName(markets)
-	utils.HandleErr(err)
+	if err != nil {
+		return nil, err
+	}
 
 	for i, coin := range price_coins {
 		coins[i].Market = coin.Market
@@ -97,13 +102,24 @@ func setCoins() {
 		} else if coin.Change == "FALL" {
 			coins[i].ChangeRate = -coin.ChangeRate
 		}
-		coinBytes, err := json.Marshal(coins[i])
+	}
+	return coins, nil
+}
+
+func readPump() {
+	for {
+		coins, err := GetCoins()
 		utils.HandleErr(err)
-		utils.HandleErr(db().Set(coins[i].EnglishName, coinBytes, 0).Err())
+		for _, coin := range coins {
+			coinBytes, err := json.Marshal(coin)
+			utils.HandleErr(err)
+			utils.HandleErr(db().Set(coin.EnglishName, coinBytes, 0).Err())
+		}
+		time.Sleep(time.Second * 60 * 10)
 	}
 }
 
-func GetCoins(names string) (coins []model.Coin, err error) {
+func GetCoin(names string) (coins []model.Coin, err error) {
 	var val string
 	splitNames := strings.Split(names, ",")
 	for _, name := range splitNames {

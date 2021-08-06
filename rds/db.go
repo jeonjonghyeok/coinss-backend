@@ -10,7 +10,7 @@ var rds *redis.Client
 
 func Start() {
 	fmt.Println("Redis Connect")
-	go setCoins()
+	go readPump()
 }
 
 func db() *redis.Client {

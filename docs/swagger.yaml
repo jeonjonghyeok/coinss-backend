@@ -8,14 +8,6 @@ definitions:
         example: "123"
         type: string
     type: object
-  controller.favorite:
-    properties:
-      name:
-        example: Bitcoin
-        type: string
-    required:
-    - name
-    type: object
   controller.search:
     properties:
       search:
@@ -50,6 +42,14 @@ definitions:
         type: string
       price:
         type: number
+    type: object
+  model.Favorite:
+    properties:
+      name:
+        example: Bitcoin
+        type: string
+    required:
+    - name
     type: object
   model.User:
     properties:
@@ -105,12 +105,12 @@ paths:
         name: token
         required: true
         type: string
-      - description: Faavorite
+      - description: Favorite
         in: body
         name: favorite
         required: true
         schema:
-          $ref: '#/definitions/controller.favorite'
+          $ref: '#/definitions/model.Favorite'
       produces:
       - application/json
       responses:
@@ -138,7 +138,7 @@ paths:
       consumes:
       - application/json
       description: 관심코인 조회
-      operationId: post-coin-favorites
+      operationId: get-coin-favorites
       parameters:
       - description: token
         in: header
@@ -164,21 +164,21 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httputil.HTTPError'
-      summary: Register Favority Coin
+      summary: Get Favorites
       tags:
       - coin
-  /api/v1/coin/list:
-    get:
+  /api/v1/coin/info:
+    post:
       consumes:
       - application/json
-      description: get coinlist
+      description: get coins
       parameters:
-      - description: Faavorite
+      - description: Favorite
         in: body
         name: favorite
         required: true
         schema:
-          $ref: '#/definitions/controller.favorite'
+          $ref: '#/definitions/model.Favorite'
       produces:
       - application/json
       responses:
@@ -199,6 +199,33 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: Coin-List
+      tags:
+      - coin
+  /api/v1/coin/list:
+    get:
+      consumes:
+      - application/json
+      description: get coin list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Coin'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Coin-Info
       tags:
       - coin
   /api/v1/coin/search:
@@ -233,7 +260,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httputil.HTTPError'
-      summary: Register Favority Coin
+      summary: Save Search
       tags:
       - coin
   /api/v1/coin/wallet:

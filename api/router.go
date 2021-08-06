@@ -61,7 +61,8 @@ func Start() {
 		}
 		coin := v1.Group("/coin")
 		{
-			coin.GET("list", c.Coins)
+			coin.POST("info", c.Info)
+			coin.GET("list", c.List)
 			coin.GET("wallet", c.Wallet)
 			coin.POST("favorite", c.Favorite)
 			coin.GET("favorites", c.Favorites)

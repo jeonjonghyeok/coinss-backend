@@ -15,22 +15,39 @@ import (
 )
 
 // Coin-List godoc
-// @Summary Coin-List
-// @Description get coinlist
+// @Summary Coin-Info
+// @Description get coin list
 // @Tags coin
 // @Accept  json
 // @Produce  json
-// @Param favorite body favorite true "Faavorite"
 // @Success 200 {object} model.Coin
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 404 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
 // @Router /api/v1/coin/list [get]
-func (c *Controller) Coins(ctx *gin.Context) {
-	var f favorite
+func (c *Controller) List(ctx *gin.Context) {
+	coins, err := rds.GetCoins()
+	utils.HandleErr(err)
+	ctx.JSON(http.StatusOK, coins)
+}
+
+// Coin-List godoc
+// @Summary Coin-List
+// @Description get coins
+// @Tags coin
+// @Accept  json
+// @Produce  json
+// @Param favorite body model.Favorite true "Favorite"
+// @Success 200 {object} model.Coin
+// @Failure 400 {object} httputil.HTTPError
+// @Failure 404 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Router /api/v1/coin/info [post]
+func (c *Controller) Info(ctx *gin.Context) {
+	var f model.Favorite
 	utils.HandleErr(ctx.BindJSON(&f))
 
-	coins, err := rds.GetCoins(f.Name)
+	coins, err := rds.GetCoin(f.Name)
 	utils.HandleErr(err)
 
 	ctx.JSON(http.StatusOK, coins)
@@ -85,10 +102,6 @@ func (c *Controller) Wallet(ctx *gin.Context) {
 
 }
 
-type favorite struct {
-	Name string `form:"name" json:"name" example:"Bitcoin" binding:"required"`
-}
-
 // Favorite godoc
 // @Summary Register Favority Coin
 // @Description 관심코인 등록
@@ -97,7 +110,7 @@ type favorite struct {
 // @Accept  json
 // @Produce  json
 // @Param token header string true "token"
-// @Param favorite body favorite true "Faavorite"
+// @Param favorite body model.Favorite true "Favorite"
 // @Success 200 {object} model.User
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 404 {object} httputil.HTTPError
@@ -111,7 +124,7 @@ func (c *Controller) Favorite(ctx *gin.Context) {
 	id, err := upbit.Parse(h.Token)
 	utils.HandleErr(err)
 
-	var f favorite
+	var f model.Favorite
 	utils.HandleErr(ctx.BindJSON(&f))
 	names := psql.GetFavorites(id)
 	if names == "" {
@@ -124,9 +137,9 @@ func (c *Controller) Favorite(ctx *gin.Context) {
 }
 
 // Favorite godoc
-// @Summary Register Favority Coin
+// @Summary Get Favorites
 // @Description 관심코인 조회
-// @ID post-coin-favorites
+// @ID get-coin-favorites
 // @Tags coin
 // @Accept  json
 // @Produce  json
@@ -147,7 +160,7 @@ func (c *Controller) Favorites(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, nil)
 		return
 	}
-	coins, err := rds.GetCoins(names)
+	coins, err := rds.GetCoin(names)
 	utils.HandleErr(err)
 
 	ctx.JSON(http.StatusOK, coins)
@@ -158,7 +171,7 @@ type search struct {
 }
 
 // Search godoc
-// @Summary Register Favority Coin
+// @Summary Save Search
 // @Description 검색어 저장
 // @ID post-coin-search
 // @Tags coin
